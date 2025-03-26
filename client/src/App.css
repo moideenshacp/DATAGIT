@@ -1,5 +1,7 @@
 h1 {
-  max-width: 1200px; /* Increased max-width to accommodate side-by-side layout */
+  max-width: 1200px; 
   margin: 0 auto;
   padding: 20px;
+  text-align: center;
+  color: #3498db;
 }

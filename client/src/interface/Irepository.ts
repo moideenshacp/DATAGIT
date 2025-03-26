@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { IUser } from "./Iuser";
+
 export interface Repository {
   id: number;
   name: string;
@@ -7,6 +8,6 @@ export interface Repository {
   stargazers_count: number;
   forks_count: number;
   html_url: string;
-  user:any
+  user:IUser
 }
 

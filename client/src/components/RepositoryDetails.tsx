@@ -1,27 +1,33 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Repository } from "../interface/Irepository";
 import "../css/RepositoryDetails.css";
+import { IUser } from "../interface/Iuser";
 
 interface RepositoryDetailsProps {
   repo: Repository;
   onBack: () => void;
-  user: any;
+  user: IUser;
 }
 
-const RepositoryDetails: React.FC<RepositoryDetailsProps> = ({ repo, onBack, user }) => {
+const RepositoryDetails: React.FC<RepositoryDetailsProps> = ({
+  repo,
+  onBack,
+  user,
+}) => {
   return (
     <div className="repository-details-container">
       <div className="back-navigation">
-        <button onClick={onBack} className="back-link">← Back to Repositories</button>
+        <button onClick={onBack} className="back-link">
+          ← Back to Repositories
+        </button>
       </div>
-      
+
       <div className="app-details-card">
         <div className="app-header">
           <div className="app-logo">
-            <img 
-              src={user?.avatar_url || "default-avatar.png"} 
-              alt={`${repo.name} logo`} 
+            <img
+              src={user?.avatar_url || "default-avatar.png"}
+              alt={`${repo.name} logo`}
               className="logo-image"
             />
           </div>
@@ -30,7 +36,9 @@ const RepositoryDetails: React.FC<RepositoryDetailsProps> = ({ repo, onBack, use
             <div className="verification-status">
               <span className="verified-badge">✓ Verified by GitHub</span>
             </div>
-            <p className="app-description">{repo.description || "No description provided"}</p>
+            <p className="app-description">
+              {repo.description || "No description provided"}
+            </p>
           </div>
         </div>
 
@@ -47,10 +55,10 @@ const RepositoryDetails: React.FC<RepositoryDetailsProps> = ({ repo, onBack, use
         </div>
 
         <div className="app-actions">
-          <a 
-            href={repo.html_url} 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href={repo.html_url}
+            target="_blank"
+            rel="noopener noreferrer"
             className="set-up-button"
           >
             View on GitHub
@@ -63,7 +71,9 @@ const RepositoryDetails: React.FC<RepositoryDetailsProps> = ({ repo, onBack, use
             <div className="detail-grid">
               <div className="detail-item">
                 <span className="detail-label">Language</span>
-                <span className="detail-value">{repo.language || "Not specified"}</span>
+                <span className="detail-value">
+                  {repo.language || "Not specified"}
+                </span>
               </div>
               <div className="detail-item">
                 <span className="detail-label">Stars</span>

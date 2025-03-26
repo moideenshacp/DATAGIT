@@ -22,12 +22,16 @@ function UserSearch() {
     e.preventDefault();
     setError("");
     setIsLoading(true);
-    setShowFollowers(false)
-    setFollowers([])
-
+    setShowFollowers(false);
+    setFollowers([]);
+    setSelectedRepo(null);
+    if (username.trim().length === 0) {
+      setError("Enter a valid name!!");
+      setIsLoading(false);
+      return;
+    }
     try {
       const res = await fetchUser(username);
-
       setUser(res.data.user);
       setRepositories(res.data.repositories);
       setIsLoading(false);
@@ -45,7 +49,10 @@ function UserSearch() {
           <input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setError("");
+            }}
             placeholder="Enter GitHub username"
             className="search-input"
             required
@@ -58,34 +65,40 @@ function UserSearch() {
         {error && <div className="error-message">{error}</div>}
 
         {Object.keys(user).length > 0 && (
-          <div className="repositories-container">
-            {selectedRepo ? (
+          <div className="profile-section">
+            <UserProfile
+              user={user}
+              setFollowers={setFollowers}
+              setShowFollowers={setShowFollowers}
+              followers={followers}
+              onBack={() => {
+                setShowFollowers(false);
+                setSelectedRepo(null);
+              }}
+            />
+
+            {/* Conditional Rendering for Followers, Repository List, or Repository Details */}
+            {showFollowers ? (
+              <FollowerList
+                followers={followers}
+                onBack={() => setShowFollowers(false)}
+                setRepositories={setRepositories}
+                setUser={setUser}
+                setShowFollowers={setShowFollowers}
+                setFollowers={setFollowers}
+              />
+            ) : selectedRepo ? (
               <RepositoryDetails
                 repo={selectedRepo}
                 onBack={() => setSelectedRepo(null)}
                 user={user}
               />
             ) : (
-              <div className="profile-section">
-                <UserProfile
-                  user={user}
-                  setFollowers={setFollowers}
-                  setShowFollowers={setShowFollowers}
-                  followers={followers}
-                />
-
-                {/* Conditional Rendering for Repositories or Followers */}
-                {showFollowers ? (
-                  <FollowerList followers={followers} onBack={() => setShowFollowers(false)} />
-
-                ) : (
-                  <RepositoryList
-                    repositories={repositories}
-                    onSelect={setSelectedRepo}
-                    user={user}
-                  />
-                )}
-              </div>
+              <RepositoryList
+                repositories={repositories}
+                onSelect={setSelectedRepo}
+                user={user}
+              />
             )}
           </div>
         )}

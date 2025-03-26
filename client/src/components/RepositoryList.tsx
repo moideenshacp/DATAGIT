@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Repository } from "../interface/Irepository";
 import "../css/RepositoryList.css";
+import { IUser } from "../interface/Iuser";
 
 interface RepositoryListProps {
   repositories: Repository[];
   onSelect: (repo: Repository) => void;
-  user: any;
+  user: IUser;
 }
 
 const RepositoryList: React.FC<RepositoryListProps> = ({

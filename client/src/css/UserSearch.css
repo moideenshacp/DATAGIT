@@ -53,7 +53,11 @@
     gap: 32px; /* Space between profile and repositories */
     width: 100%;
 }
-
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 20px;
+}
 
 
 .repositories-container {

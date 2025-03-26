@@ -1,20 +1,10 @@
 import { Ifollower } from "./Ifollower";
+import { IUser } from "./Iuser";
 
 export interface UserProfileProps {
-  user: {
-    avatar_url?: string;
-    name?: string;
-    login?: string;
-    bio?: string;
-    followers?: number;
-    following?: number;
-    public_repos?: number;
-    company?: string;
-    location?: string;
-    blog?: string;
-    username?:string
-  };
+  user: IUser
   setFollowers: React.Dispatch<React.SetStateAction<Ifollower[]>>;
   setShowFollowers: React.Dispatch<React.SetStateAction<boolean>>;
   followers:Ifollower[]
+  onBack: () => void;
 }

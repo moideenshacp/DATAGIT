@@ -8,16 +8,10 @@ const UserProfile: React.FC<UserProfileProps> = ({
   setFollowers,
   setShowFollowers,
   followers,
+  onBack,
 }) => {
-  console.log('====================================');
-  console.log("Userrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",user);
-  console.log('====================================');
   const fetchAllFollowers = async () => {
-
     if (followers.length === 0) {
-      console.log('====================================');
-      console.log("user-------------",user.name);
-      console.log('====================================');
       try {
         const res = await fetchFollowers(user.username);
         setFollowers(res.data);
@@ -50,12 +44,8 @@ const UserProfile: React.FC<UserProfileProps> = ({
             <span className="stat-label">Followers</span>
             <span className="stat-value">{user.followers || 0}</span>
           </div>
-          <div className="stat">
-            <span className="stat-label">Following</span>
-            <span className="stat-value">{user.following || 0}</span>
-          </div>
-          <div className="stat">
-            <span className="stat-label">Repos</span>
+          <div className="stat" onClick={onBack} style={{ cursor: "pointer" }}>
+            <span className="stat-label">Repositories</span>
             <span className="stat-value">{user.public_repos || 0}</span>
           </div>
         </div>
