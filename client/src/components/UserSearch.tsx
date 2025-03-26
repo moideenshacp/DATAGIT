@@ -1,56 +1,82 @@
-import React, { useState } from 'react';
-// import UserInfo from './UserInfo';
-// import RepositoryList from './RepositoryList';
-import { fetchUser } from '../api/api';
+import React, { useState } from "react";
+import RepositoryList from "./RepositoryList";
+import UserProfile from "./UserProfile";
+import { fetchUser } from "../api/api";
+import "../css/UserSearch.css";
+import RepositoryDetails from "./RepositoryDetails";
+import { Repository } from "../interface/Irepository";
 
 function UserSearch() {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [user, setUser] = useState({});
-  // const [repositories, setRepositories] = useState([]);
+  const [repositories, setRepositories] = useState([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
 
-  const handleSearch = async (e:React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setIsLoading(true);
 
     try {
-      // Save user details to backend
-      const res = await fetchUser(username)
-      
-      setUser(res.data);
-      
-      // // Fetch repositories
-      // const userRepos = await GitHubService.fetchRepositories(username);
-      // setRepositories(userRepos);
+      const res = await fetchUser(username);
+      setUser(res.data.user);
+      setRepositories(res.data.repositories);
+      setIsLoading(false);
     } catch (err) {
-      setError('Failed to fetch user data');
+      setError("Failed to fetch user data");
+      setIsLoading(false);
       console.error(err);
     }
   };
 
-  console.log(user,"user---------------------");
-  
   return (
     <div>
-      <form onSubmit={handleSearch}>
-        <input 
-          type="text" 
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter GitHub username"
-          required
-        />
-        <button type="submit">Search</button>
-      </form>
 
-      {error && <p>{error}</p>}
+    <div className="user-search-container">
 
-      {/* {user && (
-        <>
-          <UserInfo user={user} />
-          <RepositoryList repositories={repositories} username={username} />
-        </>
-      )} */}
+      <div className="search-and-repos-section">
+        <form onSubmit={handleSearch} className="search-form">
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Enter GitHub username"
+            className="search-input"
+            required
+          />
+          <button type="submit" className="search-button">
+            {isLoading ? "Searching..." : "Search"}
+          </button>
+        </form>
+
+        {error && <div className="error-message">{error}</div>}
+
+        {Object.keys(user).length > 0 && (
+          <div className="repositories-container">
+            {selectedRepo ? (
+              <RepositoryDetails
+                repo={selectedRepo}
+                onBack={() => setSelectedRepo(null)}
+                user={user}
+              />
+              
+            ) : (
+              <div className="profile-section" >
+
+                <UserProfile user={user}/>
+                <RepositoryList
+                  repositories={repositories}
+                  onSelect={setSelectedRepo}
+                  user={user}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
     </div>
   );
 }

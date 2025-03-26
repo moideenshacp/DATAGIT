@@ -1,0 +1,77 @@
+.user-search-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 20px;
+}
+
+.user-profile-section {
+  width: 300px;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.user-avatar {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+.user-details {
+  text-align: center;
+}
+
+.user-name {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #24292f;
+}
+
+.user-bio {
+  color: #57606a;
+  margin-bottom: 15px;
+}
+
+.user-stats {
+  display: flex;
+  justify-content: space-around;
+  background-color: #eaeef2;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  color: #57606a;
+  font-size: 12px;
+}
+
+.stat-value {
+  font-weight: bold;
+  color: #24292f;
+}
+
+.user-additional-info {
+  text-align: left;
+}
+
+.info-item {
+  margin: 8px 0;
+  color: #57606a;
+  display: flex;
+  align-items: center;
+}
+
+.search-and-repos-section {
+  flex-grow: 1;
+}

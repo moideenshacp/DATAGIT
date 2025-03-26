@@ -13,9 +13,7 @@ export class UserController implements IuserController {
         const { username } = req.query;
         console.log("username in contrller",username);
         
-        const user = await this._userService.fetchUser(username as string);
-        console.log("user-------------------------------",user);
-        
+        const user = await this._userService.fetchUser(username as string);        
         res.status(200).json(user);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
