@@ -19,4 +19,17 @@ export class UserController implements IuserController {
       res.status(500).json({ message: error.message });
     }
   };
+
+  public fetchUserFollowers = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { username } = req.query;
+      console.log("here user",username);
+      
+      const followers = await this._userService.fetchUserFollowers(username as string);
+      res.status(200).json(followers);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  
 }

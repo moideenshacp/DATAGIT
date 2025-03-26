@@ -13,5 +13,7 @@ const userService:IuserService = new UserService(gitHubService)
 const userController :IuserController = new UserController(userService)
 
 router.get('/fetchUser',userController.fetchUser)
+router.get("/followers", userController.fetchUserFollowers);
+
 
 export default router

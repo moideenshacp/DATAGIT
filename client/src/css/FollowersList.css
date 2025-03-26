@@ -1,0 +1,95 @@
+:root {
+    --bg: #f6f8fa;
+    --card-bg: white;
+    --border: #e1e4e8;
+    --text-primary: #24292e;
+    --text-secondary: #586069;
+    --verified-green: #2ecc71;
+  }
+
+.followers-container {
+    margin: 0 auto;
+    padding: 20px;
+    background-color: var(--bg);
+  }
+  
+  .back-navigation {
+    margin-bottom: 20px;
+  }
+  
+  .back-link {
+    background: none;
+    border: none;
+    color: #0366d6;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+  }
+  
+  .followers-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .follower-card {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+    position: relative;
+  }
+  .follower-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .follower-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; 
+    overflow: hidden; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0; 
+    margin-right: 16px;
+    
+  }
+  
+  .follower-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .follower-info {
+    flex-grow: 1;
+  }
+  
+  .follower-info h4 {
+    margin: 0 0 10px 0;
+    color: #24292e;
+  }
+  
+  .view-profile-link {
+    display: inline-block;
+    text-decoration: none;
+    color: #0366d6;
+    font-weight: 400;
+  }
+  
+  .view-profile-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive design */
+  @media (max-width: 600px) {
+    .followers-grid {
+      grid-template-columns: 1fr;
+    }
+  }

@@ -2,25 +2,32 @@ import React, { useState } from "react";
 import RepositoryList from "./RepositoryList";
 import UserProfile from "./UserProfile";
 import { fetchUser } from "../api/api";
-import "../css/UserSearch.css";
-import RepositoryDetails from "./RepositoryDetails";
 import { Repository } from "../interface/Irepository";
+import { Ifollower } from "../interface/Ifollower";
+import "../css/UserSearch.css";
+import FollowerList from "./FollowersList";
+import RepositoryDetails from "./RepositoryDetails";
 
 function UserSearch() {
   const [username, setUsername] = useState("");
   const [user, setUser] = useState({});
-  const [repositories, setRepositories] = useState([]);
+  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [followers, setFollowers] = useState<Ifollower[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedRepo, setSelectedRepo] = useState<Repository | null>(null);
+  const [showFollowers, setShowFollowers] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
+    setShowFollowers(false)
+    setFollowers([])
 
     try {
       const res = await fetchUser(username);
+
       setUser(res.data.user);
       setRepositories(res.data.repositories);
       setIsLoading(false);
@@ -32,10 +39,7 @@ function UserSearch() {
   };
 
   return (
-    <div>
-
     <div className="user-search-container">
-
       <div className="search-and-repos-section">
         <form onSubmit={handleSearch} className="search-form">
           <input
@@ -61,22 +65,31 @@ function UserSearch() {
                 onBack={() => setSelectedRepo(null)}
                 user={user}
               />
-              
             ) : (
-              <div className="profile-section" >
-
-                <UserProfile user={user}/>
-                <RepositoryList
-                  repositories={repositories}
-                  onSelect={setSelectedRepo}
+              <div className="profile-section">
+                <UserProfile
                   user={user}
+                  setFollowers={setFollowers}
+                  setShowFollowers={setShowFollowers}
+                  followers={followers}
                 />
+
+                {/* Conditional Rendering for Repositories or Followers */}
+                {showFollowers ? (
+                  <FollowerList followers={followers} onBack={() => setShowFollowers(false)} />
+
+                ) : (
+                  <RepositoryList
+                    repositories={repositories}
+                    onSelect={setSelectedRepo}
+                    user={user}
+                  />
+                )}
               </div>
             )}
           </div>
         )}
       </div>
-    </div>
     </div>
   );
 }

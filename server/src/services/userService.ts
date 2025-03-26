@@ -4,6 +4,8 @@ import { IUserModel } from "../interface/IuserModel";
 import { IRepositoryModel } from "../interface/IRepositoryModel";
 import { IgithubService } from "../interface/IgithubService";
 import { IuserService } from "../interface/IuserService";
+import { Ifollower } from "../interface/Ifollower";
+import FollowerModel from "../models/FollowerModel";
 
 export class UserService implements IuserService {
   private _githubService: IgithubService;
@@ -60,4 +62,33 @@ export class UserService implements IuserService {
 
     return { user: newUser, repositories };
   }
+
+
+async fetchUserFollowers(username: string): Promise<Ifollower[]> {
+  // Check if followers already exist in the database
+  let existingFollowers = await FollowerModel.find({ username });
+
+  console.log("njananaaaauser",username);
+  
+  if (existingFollowers.length > 0) {
+    console.log("Returning cached followers from DB");
+    return existingFollowers;
+  }
+
+  // Fetch followers from GitHub API
+  const githubFollowers = await this._githubService.fetchUserFollowers(username);
+
+  // Save to MongoDB
+  await FollowerModel.insertMany(
+    githubFollowers.map(follower => ({
+      username,
+      login: follower.login,
+      avatar_url: follower.avatar_url,
+      html_url: follower.html_url,
+    }))
+  );
+
+  return githubFollowers;
+}
+
 }
