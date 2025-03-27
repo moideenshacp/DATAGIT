@@ -8,6 +8,5 @@ export interface Repository {
   stargazers_count: number;
   forks_count: number;
   html_url: string;
-  user:IUser
+  user: IUser;
 }
-

@@ -14,7 +14,7 @@ const RepositoryList: React.FC<RepositoryListProps> = ({
   onSelect,
   user,
 }) => {
-  console.log(repositories, "repositorryeyheyeyeye");
+  
   return (
     <div className="repository-grid">
       {repositories.map((repo) => (

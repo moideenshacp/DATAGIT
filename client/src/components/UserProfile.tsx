@@ -2,19 +2,24 @@ import React from "react";
 import "../css/UserProfile.css";
 import { UserProfileProps } from "../interface/IuserProfile";
 import { fetchFollowers } from "../api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/Store";
+import { setFollowers } from "../redux/slice/UserSlice";
 
 const UserProfile: React.FC<UserProfileProps> = ({
   user,
-  setFollowers,
   setShowFollowers,
-  followers,
   onBack,
 }) => {
+
+  const dispatch = useDispatch();
+  const followers = useSelector((state: RootState) => state.user.followers);
+  
   const fetchAllFollowers = async () => {
     if (followers.length === 0) {
       try {
         const res = await fetchFollowers(user.username);
-        setFollowers(res.data);
+        dispatch(setFollowers(res.data));
       } catch (error) {
         console.error("Error fetching followers:", error);
       }

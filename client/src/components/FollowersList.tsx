@@ -1,36 +1,37 @@
 import React from "react";
-import { Ifollower } from "../interface/Ifollower";
 import "../css/FollowersList.css";
-import { Repository } from "../interface/Irepository";
-import { IUser } from "../interface/Iuser";
 import { fetchUser } from "../api/api";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/Store";
+import {
+  setFollowers,
+  setRepositories,
+  setUser,
+} from "../redux/slice/UserSlice";
 
 interface FollowerListProps {
-  followers: Ifollower[];
   onBack: () => void;
-  setRepositories: React.Dispatch<React.SetStateAction<Repository[]>>;
-  setUser: React.Dispatch<React.SetStateAction<IUser>>;
-  setFollowers: React.Dispatch<React.SetStateAction<Ifollower[]>>;
   setShowFollowers: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const FollowerList: React.FC<FollowerListProps> = ({
-  followers,
   onBack,
-  setUser,
-  setRepositories,
-  setFollowers,
-  setShowFollowers
+  setShowFollowers,
 }) => {
+
+
+  const dispatch = useDispatch();
+  const { followers } = useSelector((state: RootState) => state.user);
+
+  
   // Function to fetch details of clicked follower
   const fetchFollowerProfile = async (username: string) => {
     try {
       const res = await fetchUser(username);
-      setUser(res.data.user);
-      setRepositories(res.data.repositories);
-      setFollowers([])
-      setShowFollowers(false)
-      
+      dispatch(setUser(res.data.user));
+      dispatch(setRepositories(res.data.repositories));
+      dispatch(setFollowers([]));
+      setShowFollowers(false);
     } catch (error) {
       console.error("Error fetching follower profile:", error);
     }
