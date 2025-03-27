@@ -53,7 +53,7 @@ FRONT_URL = http://localhost:5173
 ## Project Folder Structure
 ```
 DATAGIT/
-│── backend/
+│── server/
 │   │── src/
 │   │   │── controllers/        # Business logic for routes
 │   │   │── models/             # Mongoose schemas
@@ -64,7 +64,7 @@ DATAGIT/
 │   │── .env                    # Environment variables
 │   │── app.ts                  # Express setup && # Server entry point
 │   │── package.json            # Dependencies & scripts              
-│── frontend/
+│── client/
 │   │── src/
 │   │   │── api/                # Contains all api 
 │   │   │── components/         # Reusable UI components
