@@ -13,14 +13,25 @@ export class UserService implements IuserService {
     this._githubService = _githubService;
   }
 
-  async fetchUser(username: string): Promise<{ user: IUserModel; repositories: IRepositoryModel[] }> {
+  async fetchUser(
+    username: string
+  ): Promise<{ user: IUserModel; repositories: IRepositoryModel[] }> {
     let existingUser = await User.findOne({ username });
 
     if (existingUser) {
       // Fetch associated repositories from MongoDB
       console.log("checking for existeing data");
-      
-      const existingRepositories = await Repository.find({ owner: existingUser._id });
+
+      if (existingUser.isDeleted) {
+        // Restore soft-deleted user
+        existingUser.isDeleted = false;
+        await existingUser.save();
+        console.log("User restored from soft delete.");
+      }
+
+      const existingRepositories = await Repository.find({
+        owner: existingUser._id,
+      });
       return { user: existingUser, repositories: existingRepositories };
     }
 
@@ -40,11 +51,14 @@ export class UserService implements IuserService {
       followers: githubUserData.followers,
       following: githubUserData.following,
       created_at: githubUserData.created_at,
+      isDeleted:false
     });
 
     // Fetch and save repositories
-    const githubRepositories = await this._githubService.fetchUserRepositories(username);
-    
+    const githubRepositories = await this._githubService.fetchUserRepositories(
+      username
+    );
+
     const repositories = await Repository.insertMany(
       githubRepositories.map((repo) => ({
         name: repo.name,
@@ -63,32 +77,53 @@ export class UserService implements IuserService {
     return { user: newUser, repositories };
   }
 
+  async fetchUserFollowers(username: string): Promise<Ifollower[]> {
+    // Check if followers already exist in the database
+    let existingFollowers = await FollowerModel.find({ username });
 
-async fetchUserFollowers(username: string): Promise<Ifollower[]> {
-  // Check if followers already exist in the database
-  let existingFollowers = await FollowerModel.find({ username });
+    console.log("njananaaaauser", username);
 
-  console.log("njananaaaauser",username);
-  
-  if (existingFollowers.length > 0) {
-    console.log("Returning cached followers from DB");
-    return existingFollowers;
+    if (existingFollowers.length > 0) {
+      console.log("Returning cached followers from DB");
+      return existingFollowers;
+    }
+
+    // Fetch followers from GitHub API
+    const githubFollowers = await this._githubService.fetchUserFollowers(
+      username
+    );
+
+    // Save to MongoDB
+    await FollowerModel.insertMany(
+      githubFollowers.map((follower) => ({
+        username,
+        login: follower.login,
+        avatar_url: follower.avatar_url,
+        html_url: follower.html_url,
+      }))
+    );
+
+    return githubFollowers;
   }
 
-  // Fetch followers from GitHub API
-  const githubFollowers = await this._githubService.fetchUserFollowers(username);
+  async searchUsers(
+    username?: string,
+    location?: string
+  ): Promise<IUserModel[]> {
+    const query: any = {};
 
-  // Save to MongoDB
-  await FollowerModel.insertMany(
-    githubFollowers.map(follower => ({
-      username,
-      login: follower.login,
-      avatar_url: follower.avatar_url,
-      html_url: follower.html_url,
-    }))
-  );
+    if (username) query.username = username;
+    if (location) query.location = location;
 
-  return githubFollowers;
-}
+    return User.find(query);
+  }
+  async softDeleteUser(username: string): Promise<boolean> {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { isDeleted: true },
+      { new: true }
+    );
 
+    return !!user;
+  }
 }

@@ -14,6 +14,8 @@ const userController :IuserController = new UserController(userService)
 
 router.get('/fetchUser',userController.fetchUser)
 router.get("/followers", userController.fetchUserFollowers);
+router.get("/search", userController.searchUsers); 
+router.delete("/delete", userController.softDeleteUser); 
 
 
 export default router

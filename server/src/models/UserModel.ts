@@ -3,7 +3,7 @@ import { IUserModel } from "../interface/IuserModel";
 
 const UserSchema:Schema = new mongoose.Schema(
   {
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
     name: String,
     avatar_url: String,
     location: String,
