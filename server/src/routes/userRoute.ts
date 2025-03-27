@@ -18,6 +18,8 @@ router.get("/search", userController.searchUsers);
 router.delete("/delete", userController.softDeleteUser); 
 router.put("/update/:username", userController.updateUser);
 router.get("/users", userController.getAllUsersSorted);
+router.get('/mutual-friends', userController.findMutualFriends);
+
 
 
 

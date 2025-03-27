@@ -123,6 +123,22 @@ export class UserController implements IuserController {
       res.status(400).json({ message: error.message });
     }
   };
+  public findMutualFriends = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { username } = req.body;
+
+      if (!username) {
+        res.status(400).json({ message: 'Username is required' });
+        return;
+      }
+
+      const mutualFriends = await this._userService.findMutualFriends(username);
+      res.status(200).json(mutualFriends);
+      
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };
   
   
 }

@@ -7,4 +7,5 @@ export interface IuserController {
     softDeleteUser(req: Request, res: Response): Promise<void>
     updateUser(req: Request, res: Response): Promise<void>
     getAllUsersSorted(req: Request, res: Response): Promise<void>
+    findMutualFriends(req: Request, res: Response): Promise<void> 
 }

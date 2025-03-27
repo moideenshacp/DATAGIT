@@ -144,6 +144,90 @@ export class UserService implements IuserService {
   
     return User.find({ isDeleted: false }).sort({ [sortBy]: 1 }); 
   }
+  async findMutualFriends(username: string): Promise<IUserModel[]> {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    // If mutual friends are already stored, return them directly
+    if (user.friends && user.friends.length > 0) {
+      console.log("ind");
+      
+        const users = await User.find({ _id: { $in: user.friends } });
+        return users
+    }
+
+    // Fetch followers and following from GitHub
+    const followers = await this._githubService.fetchUserFollowers(username);
+    const following = await this._githubService.fetchUserFollowing(username);
+
+    // Find mutual friends
+    const mutualFriends = followers.filter(follower => 
+        following.some(follow => follow.login === follower.login)
+    );
+
+    // Save mutual friends & their repositories to database
+    const friendIds = await Promise.all(
+        mutualFriends.map(async (friend) => {
+            let friendUser = await User.findOne({ username: friend.login });
+
+            if (!friendUser) {
+                // Fetch full user data from GitHub
+                const githubUserData = await this._githubService.fetchUserData(friend.login);
+
+                // Save user details
+                friendUser = new User({
+                    username: githubUserData.login,
+                    name: githubUserData.name,
+                    avatar_url: githubUserData.avatar_url,
+                    location: githubUserData.location,
+                    blog: githubUserData.blog,
+                    bio: githubUserData.bio,
+                    public_repos: githubUserData.public_repos,
+                    public_gists: githubUserData.public_gists,
+                    followers: githubUserData.followers,
+                    following: githubUserData.following,
+                    created_at: githubUserData.created_at,
+                    isDeleted: false,
+                });
+
+                await friendUser.save();
+
+                // Fetch and save repositories
+                const githubRepositories = await this._githubService.fetchUserRepositories(friend.login);
+
+                await Repository.insertMany(
+                    githubRepositories.map((repo) => ({
+                        name: repo.name,
+                        full_name: repo.full_name,
+                        description: repo.description,
+                        html_url: repo.html_url,
+                        stargazers_count: repo.stargazers_count,
+                        forks_count: repo.forks_count,
+                        language: repo.language,
+                        owner: friendUser?._id, 
+                        created_at: repo.created_at,
+                        updated_at: repo.updated_at,
+                    }))
+                );
+            }
+
+            return friendUser._id;
+        })
+    );
+
+    // Update the user’s mutual friends list
+    user.friends = friendIds;
+    await user.save();
+
+    // Fetch full details of mutual friends 
+    const users = await User.find({ _id: { $in: friendIds } });
+
+    return  users 
+}
+
   
   
 }

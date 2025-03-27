@@ -9,4 +9,5 @@ export interface IuserService{
     softDeleteUser(username: string): Promise<boolean>
     updateUser(username: string, updates: Partial<IUserModel>): Promise<IUserModel | null>
     getAllUsersSorted(sortBy: string): Promise<IUserModel[]>
+    findMutualFriends(username: string): Promise<IUserModel[]>
 }
