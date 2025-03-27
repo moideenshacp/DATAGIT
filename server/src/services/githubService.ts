@@ -11,8 +11,7 @@ export class GitHubService implements IgithubService {
         `${process.env.GIT_API}/users/${username}`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-            "User-Agent": "GitHub-User-Management-App",
+            Authorization: `token ${process.env.GITHUB_TOKEN}`,
           },
         }
       );
@@ -30,8 +29,7 @@ export class GitHubService implements IgithubService {
         `${process.env.GIT_API}/users/${username}/repos`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-            "User-Agent": "GitHub-User-Management-App",
+            Authorization: `token ${process.env.GITHUB_TOKEN}`,
           },
         }
       );
@@ -48,8 +46,7 @@ export class GitHubService implements IgithubService {
         `${process.env.GIT_API}/users/${username}/followers`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-            "User-Agent": "GitHub-User-Management-App",
+            Authorization: `token ${process.env.GITHUB_TOKEN}`,
           },
         }
       );
@@ -66,8 +63,7 @@ export class GitHubService implements IgithubService {
         `${process.env.GIT_API}/users/${username}/following`,
         {
           headers: {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-            "User-Agent": "GitHub-User-Management-App",
+            Authorization: `token ${process.env.GITHUB_TOKEN}`,
           },
         }
       );
