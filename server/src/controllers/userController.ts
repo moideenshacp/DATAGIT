@@ -86,5 +86,43 @@ export class UserController implements IuserController {
       res.status(500).json({ message: error.message });
     }
   };
+  public updateUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { username } = req.params;
+      const updates = req.body; 
+  
+      if (!updates || Object.keys(updates).length === 0) {
+        res.status(400).json({ message: "No fields provided for update" });
+        return;
+      }
+  
+      const updatedUser = await this._userService.updateUser(username, updates);
+  
+      if (!updatedUser) {
+        res.status(404).json({ message: "User not found or deleted" });
+        return;
+      }
+  
+      res.status(200).json({ message: "User updated successfully", user: updatedUser });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  };
+  public getAllUsersSorted = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const { sortBy } = req.query;
+  
+      if (!sortBy || typeof sortBy !== "string") {
+        res.status(400).json({ message: "sortBy field is required" });
+        return;
+      }
+      const users = await this._userService.getAllUsersSorted(sortBy);
+      
+      res.status(200).json(users);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+  
   
 }

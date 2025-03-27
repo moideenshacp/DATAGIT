@@ -110,7 +110,7 @@ export class UserService implements IuserService {
     username?: string,
     location?: string
   ): Promise<IUserModel[]> {
-    const query: any = {};
+    const query: any = { isDeleted: false };
 
     if (username) query.username = username;
     if (location) query.location = location;
@@ -126,4 +126,24 @@ export class UserService implements IuserService {
 
     return !!user;
   }
+  async updateUser(username: string, updates: Partial<IUserModel>): Promise<IUserModel | null> {
+    const updatedUser = await User.findOneAndUpdate(
+      { username, isDeleted: false }, 
+      { $set: updates },
+      { new: true } 
+    );
+  
+    return updatedUser;
+  }
+  async getAllUsersSorted(sortBy: string): Promise<IUserModel[]> {
+    const validSortFields = ["public_repos", "public_gists", "followers", "following", "created_at"];
+  
+    if (!validSortFields.includes(sortBy)) {
+      throw new Error("Invalid sort field");
+    }
+  
+    return User.find({ isDeleted: false }).sort({ [sortBy]: 1 }); 
+  }
+  
+  
 }

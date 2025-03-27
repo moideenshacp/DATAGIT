@@ -16,6 +16,10 @@ router.get('/fetchUser',userController.fetchUser)
 router.get("/followers", userController.fetchUserFollowers);
 router.get("/search", userController.searchUsers); 
 router.delete("/delete", userController.softDeleteUser); 
+router.put("/update/:username", userController.updateUser);
+router.get("/users", userController.getAllUsersSorted);
+
+
 
 
 export default router

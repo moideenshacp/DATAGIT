@@ -7,4 +7,6 @@ export interface IuserService{
     fetchUserFollowers(username: string): Promise<Ifollower[]>
     searchUsers(username?: string, location?: string): Promise<IUserModel[]>
     softDeleteUser(username: string): Promise<boolean>
+    updateUser(username: string, updates: Partial<IUserModel>): Promise<IUserModel | null>
+    getAllUsersSorted(sortBy: string): Promise<IUserModel[]>
 }

@@ -5,4 +5,6 @@ export interface IuserController {
     fetchUserFollowers(req: Request, res: Response): Promise<void>
     searchUsers (req: Request, res: Response): Promise<void> 
     softDeleteUser(req: Request, res: Response): Promise<void>
+    updateUser(req: Request, res: Response): Promise<void>
+    getAllUsersSorted(req: Request, res: Response): Promise<void>
 }
