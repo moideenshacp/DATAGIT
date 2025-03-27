@@ -9,7 +9,7 @@ export interface IRepositoryModel {
   stargazers_count: number;
   forks_count: number;
   language?: string;
-  owner: mongoose.Types.ObjectId; 
-  created_at: string; 
+  owner: mongoose.Types.ObjectId;
+  created_at: string;
   updated_at: string;
 }

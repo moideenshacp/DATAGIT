@@ -10,13 +10,20 @@ const RepositorySchema: Schema = new mongoose.Schema(
     stargazers_count: { type: Number, default: 0 },
     forks_count: { type: Number, default: 0 },
     language: String,
-    owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     created_at: { type: Date, required: true },
     updated_at: { type: Date, required: true },
   },
   { timestamps: true }
 );
 
-const Repository = mongoose.model<IRepositoryModel>("Repository", RepositorySchema);
+const Repository = mongoose.model<IRepositoryModel>(
+  "Repository",
+  RepositorySchema
+);
 
 export default Repository;

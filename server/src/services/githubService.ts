@@ -10,8 +10,7 @@ export class GitHubService implements IgithubService {
       const response = await axios.get<IUserModel>(
         `${process.env.GIT_API}/${username}`
       );
-    console.log("hey");
-          
+
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch GitHub user data");
@@ -23,8 +22,6 @@ export class GitHubService implements IgithubService {
       const response = await axios.get<IRepositoryModel[]>(
         `${process.env.GIT_API}/${username}/repos`
       );
-      console.log("Bii");
-      
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch user repositories");

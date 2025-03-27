@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 export interface IUserModel {
   _id?: mongoose.Types.ObjectId;
   username: string;
-  login?:string
+  login?: string;
   name?: string;
   avatar_url?: string;
   location?: string;
@@ -13,7 +13,7 @@ export interface IUserModel {
   public_gists?: number;
   followers?: number;
   following?: number;
-  created_at?: string; 
-  friends?: mongoose.Types.ObjectId[]; 
+  created_at?: string;
+  friends?: mongoose.Types.ObjectId[];
   isDeleted?: boolean;
 }

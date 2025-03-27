@@ -20,13 +20,11 @@ export class UserService implements IuserService {
 
     if (existingUser) {
       // Fetch associated repositories from MongoDB
-      console.log("checking for existeing data");
 
       if (existingUser.isDeleted) {
         // Restore soft-deleted user
         existingUser.isDeleted = false;
         await existingUser.save();
-        console.log("User restored from soft delete.");
       }
 
       const existingRepositories = await Repository.find({
@@ -51,7 +49,7 @@ export class UserService implements IuserService {
       followers: githubUserData.followers,
       following: githubUserData.following,
       created_at: githubUserData.created_at,
-      isDeleted:false
+      isDeleted: false,
     });
 
     // Fetch and save repositories
@@ -81,10 +79,7 @@ export class UserService implements IuserService {
     // Check if followers already exist in the database
     let existingFollowers = await FollowerModel.find({ username });
 
-    console.log("njananaaaauser", username);
-
     if (existingFollowers.length > 0) {
-      console.log("Returning cached followers from DB");
       return existingFollowers;
     }
 
@@ -117,6 +112,7 @@ export class UserService implements IuserService {
 
     return User.find(query);
   }
+
   async softDeleteUser(username: string): Promise<boolean> {
     const user = await User.findOneAndUpdate(
       { username },
@@ -126,37 +122,47 @@ export class UserService implements IuserService {
 
     return !!user;
   }
-  async updateUser(username: string, updates: Partial<IUserModel>): Promise<IUserModel | null> {
+
+  async updateUser(
+    username: string,
+    updates: Partial<IUserModel>
+  ): Promise<IUserModel | null> {
     const updatedUser = await User.findOneAndUpdate(
-      { username, isDeleted: false }, 
+      { username, isDeleted: false },
       { $set: updates },
-      { new: true } 
+      { new: true }
     );
-  
+
     return updatedUser;
   }
+
   async getAllUsersSorted(sortBy: string): Promise<IUserModel[]> {
-    const validSortFields = ["public_repos", "public_gists", "followers", "following", "created_at"];
-  
+    const validSortFields = [
+      "public_repos",
+      "public_gists",
+      "followers",
+      "following",
+      "created_at",
+    ];
+
     if (!validSortFields.includes(sortBy)) {
       throw new Error("Invalid sort field");
     }
-  
-    return User.find({ isDeleted: false }).sort({ [sortBy]: 1 }); 
+
+    return User.find({ isDeleted: false }).sort({ [sortBy]: 1 });
   }
+
   async findMutualFriends(username: string): Promise<IUserModel[]> {
     const user = await User.findOne({ username });
 
     if (!user) {
-        throw new Error('User not found');
+      throw new Error("User not found");
     }
 
     // If mutual friends are already stored, return them directly
     if (user.friends && user.friends.length > 0) {
-      console.log("ind");
-      
-        const users = await User.find({ _id: { $in: user.friends } });
-        return users
+      const users = await User.find({ _id: { $in: user.friends } });
+      return users;
     }
 
     // Fetch followers and following from GitHub
@@ -164,70 +170,70 @@ export class UserService implements IuserService {
     const following = await this._githubService.fetchUserFollowing(username);
 
     // Find mutual friends
-    const mutualFriends = followers.filter(follower => 
-        following.some(follow => follow.login === follower.login)
+    const mutualFriends = followers.filter((follower) =>
+      following.some((follow) => follow.login === follower.login)
     );
 
     // Save mutual friends & their repositories to database
     const friendIds = await Promise.all(
-        mutualFriends.map(async (friend) => {
-            let friendUser = await User.findOne({ username: friend.login });
+      mutualFriends.map(async (friend) => {
+        let friendUser = await User.findOne({ username: friend.login });
 
-            if (!friendUser) {
-                // Fetch full user data from GitHub
-                const githubUserData = await this._githubService.fetchUserData(friend.login);
+        if (!friendUser) {
+          // Fetch full user data from GitHub
+          const githubUserData = await this._githubService.fetchUserData(
+            friend.login
+          );
 
-                // Save user details
-                friendUser = new User({
-                    username: githubUserData.login,
-                    name: githubUserData.name,
-                    avatar_url: githubUserData.avatar_url,
-                    location: githubUserData.location,
-                    blog: githubUserData.blog,
-                    bio: githubUserData.bio,
-                    public_repos: githubUserData.public_repos,
-                    public_gists: githubUserData.public_gists,
-                    followers: githubUserData.followers,
-                    following: githubUserData.following,
-                    created_at: githubUserData.created_at,
-                    isDeleted: false,
-                });
+          // Save user details
+          friendUser = new User({
+            username: githubUserData.login,
+            name: githubUserData.name,
+            avatar_url: githubUserData.avatar_url,
+            location: githubUserData.location,
+            blog: githubUserData.blog,
+            bio: githubUserData.bio,
+            public_repos: githubUserData.public_repos,
+            public_gists: githubUserData.public_gists,
+            followers: githubUserData.followers,
+            following: githubUserData.following,
+            created_at: githubUserData.created_at,
+            isDeleted: false,
+          });
 
-                await friendUser.save();
+          await friendUser.save();
 
-                // Fetch and save repositories
-                const githubRepositories = await this._githubService.fetchUserRepositories(friend.login);
+          // Fetch and save repositories
+          const githubRepositories =
+            await this._githubService.fetchUserRepositories(friend.login);
 
-                await Repository.insertMany(
-                    githubRepositories.map((repo) => ({
-                        name: repo.name,
-                        full_name: repo.full_name,
-                        description: repo.description,
-                        html_url: repo.html_url,
-                        stargazers_count: repo.stargazers_count,
-                        forks_count: repo.forks_count,
-                        language: repo.language,
-                        owner: friendUser?._id, 
-                        created_at: repo.created_at,
-                        updated_at: repo.updated_at,
-                    }))
-                );
-            }
+          await Repository.insertMany(
+            githubRepositories.map((repo) => ({
+              name: repo.name,
+              full_name: repo.full_name,
+              description: repo.description,
+              html_url: repo.html_url,
+              stargazers_count: repo.stargazers_count,
+              forks_count: repo.forks_count,
+              language: repo.language,
+              owner: friendUser?._id,
+              created_at: repo.created_at,
+              updated_at: repo.updated_at,
+            }))
+          );
+        }
 
-            return friendUser._id;
-        })
+        return friendUser._id;
+      })
     );
 
     // Update the user’s mutual friends list
     user.friends = friendIds;
     await user.save();
 
-    // Fetch full details of mutual friends 
+    // Fetch full details of mutual friends
     const users = await User.find({ _id: { $in: friendIds } });
 
-    return  users 
-}
-
-  
-  
+    return users;
+  }
 }

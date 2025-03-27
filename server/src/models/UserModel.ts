@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import { IUserModel } from "../interface/IuserModel";
 
-const UserSchema:Schema = new mongoose.Schema(
+const UserSchema: Schema = new mongoose.Schema(
   {
     username: { type: String, required: true },
     name: String,
