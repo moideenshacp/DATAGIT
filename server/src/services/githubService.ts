@@ -3,6 +3,9 @@ import { IRepositoryModel } from "../interface/IRepositoryModel";
 import { Ifollower } from "../interface/Ifollower";
 import { IUserModel } from "../interface/IuserModel";
 import { IgithubService } from "../interface/IgithubService";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export class GitHubService implements IgithubService {
   async fetchUserData(username: string): Promise<IUserModel> {
