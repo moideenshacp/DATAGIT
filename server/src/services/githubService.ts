@@ -7,6 +7,8 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+console.log(process.env.GITHUB_TOKEN,"GITHUB_TOKEN");
+
 export class GitHubService implements IgithubService {
   async fetchUserData(username: string): Promise<IUserModel> {
     try {
