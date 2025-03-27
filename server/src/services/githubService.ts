@@ -18,7 +18,9 @@ export class GitHubService implements IgithubService {
       );
 
       return response.data;
-    } catch (error) {
+    } catch (error:any) {
+      console.error("GitHub API Error:", error.response?.data || error.message);
+
       throw new Error("Failed to fetch GitHub user data");
     }
   }
@@ -35,7 +37,9 @@ export class GitHubService implements IgithubService {
         }
       );
       return response.data;
-    } catch (error) {
+    } catch (error:any) {
+      console.error("GitHub API Error:", error.response?.data || error.message);
+
       throw new Error("Failed to fetch user repositories");
     }
   }
@@ -52,7 +56,9 @@ export class GitHubService implements IgithubService {
         }
       );
       return response.data;
-    } catch (error) {
+    } catch (error:any) {
+      console.error("GitHub API Error:", error.response?.data || error.message);
+
       throw new Error("Failed to fetch user followers");
     }
   }
@@ -69,7 +75,9 @@ export class GitHubService implements IgithubService {
         }
       );
       return response.data;
-    } catch (error) {
+    } catch (error:any) {
+      console.error("GitHub API Error:", error.response?.data || error.message);
+
       throw new Error("Failed to fetch user following");
     }
   }
